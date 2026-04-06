@@ -1,2 +1,2 @@
-data/taxis/*.csv
+data/
 *.parquet
