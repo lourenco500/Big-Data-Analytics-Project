@@ -24,50 +24,13 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "### <font color='#0000FF'>**Methodology**</font><a class=\"anchor\" id=\"TOP\"></a>\n",
+    "### <font color= '#0000FF'>**Methodology** </font><a class=\"anchor\" id='top'></a>\n",
     "\n",
-    "- [1. Chosen Datasets](#1)\n",
-    "    - [1.1 Yellow Taxis Dataset](#1.1)\n",
-    "    - [1.2 Financial Fraud Detection Dataset (PaySim subset)](#1.2)\n",
-    "- [2. Metadata](#2)\n",
-    "    - [2.1 Yellow Taxis Dataset](#2.1)\n",
-    "    - [2.2 Financial Fraud Detection Dataset](#2.2)\n",
-    "- [3. Setup](#3)\n",
-    "- [4. Library and Dataset Imports](#4)\n",
-    "    - [4.1 Yellow Taxis Dataset](#4.1)\n",
-    "    - [4.2 PaySim Dataset](#4.2)\n",
-    "- [5. EDA - Yellow Taxis Dataset](#5)\n",
-    "    - [5.1 Preview](#5.1)\n",
-    "    - [5.2 Data Quality Analysis](#5.2)\n",
-    "        - [5.2.1 Zero-distance trips](#5.2.1)\n",
-    "        - [5.2.2 Zero-fare trips](#5.2.2)\n",
-    "        - [5.2.3 Zero-passenger trips](#5.2.3)\n",
-    "        - [5.2.4 Extremely short trips (< 60 seconds)](#5.2.4)\n",
-    "        - [5.2.5 Same origin/destination trips](#5.2.5)\n",
-    "        - [5.2.6 Extra and MTA tax = 0](#5.2.6)\n",
-    "    - [5.3 RDD EDA](#5.3)\n",
-    "    - [5.4 DF EDA - Null Analysis and Distributions](#5.4)\n",
-    "    - [5.5 SparkSQL - Temporal Analysis and YoY comparison](#5.5)\n",
-    "- [6. Initial Preprocessing - Yellow Taxis Dataset](#6)\n",
-    "- [7. EDA - PaySim Dataset](#7)\n",
-    "    - [7.1 Dataset Preview](#7.1)\n",
-    "    - [7.2 Class Imbalance](#7.2)\n",
-    "    - [7.3 Data Quality Analysis](#7.3)\n",
-    "        - [7.3.1 Unique values](#7.3.1)\n",
-    "        - [7.3.2 Account Validity](#7.3.2)\n",
-    "        - [7.3.3 Null values](#7.3.3)\n",
-    "        - [7.3.4 Transactions between the Same Account](#7.3.4)\n",
-    "        - [7.3.5 Zero-Amount Transactions](#7.3.5)\n",
-    "        - [7.3.6 Balance Consistency Analysis](#7.3.6)\n",
-    "        - [7.3.7 Transaction Amount Consistency Analysis](#7.3.7)\n",
-    "    - [7.4 Statistical Analysis of Target Variable](#7.4)\n",
-    "        - [7.4.1 Fraud Ratios - SparkSQL](#7.4.1)\n",
-    "        - [7.4.2 Total Fraudulent Amount per Type](#7.4.2)\n",
-    "        - [7.4.3 Fraud Rate per Type](#7.4.3)\n",
-    "        - [7.4.4 Identification of Potential \"Money Mule\" Accounts](#7.4.4)\n",
-    "        - [7.4.5 Cumulative Fraudulent Amount per Account](#7.4.5)\n",
-    "- [8. Initial Preprocessing - PaySim Dataset](#8)\n",
-    "- [9. Save Preprocessed Datasets](#9)\n"
+    "- [1. Setup](#1)\n",
+    "- [2. Import Libraries](#2)\n",
+    "- [3. Metadata](#3)\n",
+    "- [4. Import Datasets](#4)\n",
+    "- [5. Data Cleaning](#5)"
    ]
   },
   {
@@ -87,9 +50,8 @@
     "\n",
     "[Back to TOP](#TOP)\n",
     "</a>\n",
-    "\n",
-    "This dataset is published by the New York City Taxi & Limousine Commission (TLC) and is freely available under a U.S. Government Works license. It contains trip records from yellow medallion taxicabs, the iconic NYC street-hail taxis whose number is limited by a finite number of TLC-issued medallions.\n",
-    "Each record corresponds to a single trip and includes 19 columns capturing. For this project, we use 4 files spanning January 2015 and January, February, and March 2016. This selection enables a year-over-year comparison between January 2015 and January 2016, as well as a short intra-year trend analysis across Q1 2016.\n",
+    "This dataset is published by the New York City Taxi & Limousine Commission (TLC) and is freely available under a U.S. Government Works license. It contains trip records from yellow medallion taxicabs,the iconic NYC street-hail taxis whose number is limited by a finite number of TLC-issued medallions.\n",
+    "Each record corresponds to a single trip and includes 19 columns capturing.For this project, we use 4 files spanning January 2015 and January, February, and March 2016. This selection enables a year-over-year comparison between January 2015 and January 2016, as well as a short intra-year trend analysis across Q1 2016.\n",
     "\n",
     "Important considerations:\n",
     "\n",
@@ -97,14 +59,14 @@
     "- trip_distance is reported by the taximeter and can be zero even when a fare was charged, suggesting meter or GPS errors\n",
     "- Fare amounts can be negative due to billing adjustments\n",
     "\n",
-    "<a class=\"anchor\" id=\"1.2\">\n",
+    "<a class=\"anchor\" id=\"1.1\">\n",
     "\n",
     "## **1.2 Financial Fraud Detection Dataset (PaySim subset)**\n",
     "\n",
     "[Back to TOP](#TOP)\n",
     "</a>\n",
     "\n",
-    "This dataset presents a synthetic representation of mobile money transactions, meticulously crafted to mirror the complexities of real-world financial activities while integrating fraudulent behaviors for research purposes. It aims to fill the gap in publicly available financial datasets for fraud detection studies and encompasses a variety of transaction types including CASH-IN, CASH-OUT, DEBIT, PAYMENT, and TRANSFER over a simulated period of 30 days, providing a comprehensive environment for evaluating fraud detection methodologies. It is scaled to 1/4 of the original dataset size for efficient use.\n",
+    "This dataset presents a synthetic representation of mobile money transactions, meticulously crafted to mirror the complexities of real-world financial activities while integrating fraudulent behaviors for research purposes. It aims to fill the gap in publicly available financial datasets for fraud detection studies and encompasses a variety of transaction types including CASH-IN, CASH-OUT, DEBIT, PAYMENT, and TRANSFER over a simulated period of 30 days, providing a comprehensive environment for evaluating fraud detection methodologies. It is scaled to 1/4 of the original dataset size for efficient use. \n",
     "\n",
     "It utilizes aggregated data from actual financial logs of a mobile money service in an African country (like M-Pesa). In these systems, cash out transfers are made with use of an intermediary, the merchant. This intermediary receives the amount of the cash out transaction and provides the same amount in physical cash.\n",
     "\n",
@@ -112,21 +74,22 @@
     "\n",
     "- **Transactions marked as fraudulent have been nullified,** emphasizing the importance of non-balance columns for fraud analysis.\n",
     "- PaySim **does not simulate the balances for merchants,** which could present \"incorrect\" balances.\n",
-    "- When a transaction is flagged by the system, it means the transfer was stopped and did not go through.\n"
+    "- When a transaction is flagged by the system, it means the transfer was stopped and did not go through.\n",
+    "\n"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"2\">\n",
+    "<a class=\"anchor\" id=\"1\">\n",
     "\n",
     "# **2. Metadata**\n",
     "\n",
     "[Back to TOP](#TOP)\n",
     "</a>\n",
     "\n",
-    "<a class=\"anchor\" id=\"2.1\">\n",
+    "<a class=\"anchor\" id=\"1.1\">\n",
     "\n",
     "## **2.1 Yellow Taxis Dataset**\n",
     "\n",
@@ -191,7 +154,7 @@
     "\n",
     "**airport_fee**: For pick up only at LaGuardia and John F. Kennedy Airports.\n",
     "\n",
-    "<a class=\"anchor\" id=\"2.2\">\n",
+    "<a class=\"anchor\" id=\"1.2\">\n",
     "\n",
     "## **2.2 Financial Fraud Detection Dataset**\n",
     "\n",
@@ -218,19 +181,19 @@
     "\n",
     "**isFraud**: Identifies transactions conducted by fraudulent agents aiming to deplete customer accounts through transfers and cash-outs.\n",
     "\n",
-    "**isFlaggedFraud**: Flags large-scale, unauthorized transfers between accounts, with any single transaction exceeding 200,000 being considered illegal.\n"
+    "**isFlaggedFraud**: Flags large-scale, unauthorized transfers between accounts, with any single transaction exceeding 200,000 being considered illegal."
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"3\">\n",
+    "<a class=\"anchor\" id=\"2\">\n",
     "\n",
-    "# **3. Setup**\n",
+    "# **2. Setup**\n",
     "\n",
     "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "</a>"
    ]
   },
   {
@@ -273,12 +236,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"4\">\n",
-    "\n",
-    "# **4. Library and Dataset Imports**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "# 3. Library and Dataset Imports"
    ]
   },
   {
@@ -391,12 +349,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"4.1\">\n",
-    "\n",
-    "## **4.1 Yellow Taxis Dataset**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "### 3.1. Yellow Taxis Dataset"
    ]
   },
   {
@@ -587,12 +540,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"4.2\">\n",
-    "\n",
-    "## **4.2 PaySim Dataset**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "## 3.2. PaySim Dataset"
    ]
   },
   {
@@ -641,19 +589,9 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"5\">\n",
+    "# 4. EDA- Yellow Taxis Dataset\n",
     "\n",
-    "# **5. EDA - Yellow Taxis Dataset**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n",
-    "\n",
-    "<a class=\"anchor\" id=\"5.1\">\n",
-    "\n",
-    "## **5.1 Preview**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "## 4.1. Preview"
    ]
   },
   {
@@ -777,19 +715,9 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"5.2\">\n",
+    "## 4.2 Data Quality Analysis\n",
     "\n",
-    "## **5.2 Data Quality Analysis**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n",
-    "\n",
-    "<a class=\"anchor\" id=\"5.2.1\">\n",
-    "\n",
-    "### **5.2.1 Zero-distance trips**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "### 4.2.1. Zero-distance trips"
    ]
   },
   {
@@ -868,12 +796,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"5.2.2\">\n",
-    "\n",
-    "### **5.2.2 Zero-fare trips**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "### 4.2.2. Zero-fare trips"
    ]
   },
   {
@@ -932,12 +855,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"5.2.3\">\n",
-    "\n",
-    "### **5.2.3 Zero-passenger trips**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "### 4.2.3. Zero-passenger trips"
    ]
   },
   {
@@ -999,12 +917,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"5.2.4\">\n",
-    "\n",
-    "### **5.2.4 Extremely short trips (< 60 seconds)**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "### 4.2.4. Extremely short trips (< 60 seconds)"
    ]
   },
   {
@@ -1071,12 +984,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"5.2.5\">\n",
-    "\n",
-    "### **5.2.5 Same origin/destination trips**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "### 4.2.5. Same origin/destination trips"
    ]
   },
   {
@@ -1155,12 +1063,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"5.2.6\">\n",
-    "\n",
-    "### **5.2.6 Extra and MTA tax = 0**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "### 4.2.6. Extra and MTA tax = 0"
    ]
   },
   {
@@ -1252,12 +1155,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"5.3\">\n",
-    "\n",
-    "## **5.3 RDD EDA**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n",
+    "### 4.3 RDD EDA\n",
     "\n",
     "This section calculates the **average fare per mile** for each taxi vendor. By aggregating the total revenue and total distance traveled per vendor, we can compare their pricing efficiency.\n",
     "\n",
@@ -1266,7 +1164,7 @@
     "1. **Cleaning**: We filter out records with `trip_distance <= 0` or `total_amount <= 0` based on our previous anomaly analysis.\n",
     "2. **Mapping**: We create key-value pairs where the key is the `VendorID` and the value is a tuple `(total_amount, trip_distance)`.\n",
     "3. **Reduction**: Using `reduceByKey`, we sum the fares and distances for each vendor across the entire distributed dataset.\n",
-    "4. **Computation**: A final map transformation calculates the ratio: `Sum of Fares / Sum of Distances`.\n"
+    "4. **Computation**: A final map transformation calculates the ratio: `Sum of Fares / Sum of Distances`."
    ]
   },
   {
@@ -1332,12 +1230,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"5.4\">\n",
-    "\n",
-    "## **5.4 DF EDA - Null Analysis and Distributions**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "### 4.4. DF EDA - Null Analysis and Distributions"
    ]
   },
   {
@@ -1704,14 +1597,8 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"5.5\">\n",
-    "\n",
-    "## **5.5 SparkSQL - Temporal Analysis and YoY comparison**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n",
-    "\n",
-    "SparkSQL is particularly well-suited for temporal analysis on the taxi dataset because time-based aggregations naturally take the form of relational queries. These operations involve multiple levels of aggregation, conditional filtering, and cross-period comparisons (e.g. January 2015 vs January 2016) that would require deeply chained .groupBy(), .agg(), and .join() calls in the DataFrame API. In SQL, the same logic is expressed declaratively and remains readable at a glance. SparkSQL also integrates seamlessly with Spark's Catalyst optimizer, meaning there is no performance trade-off.\n"
+    "### 4.5. SparkSQL- Temporal Analysis and YoY comparison\n",
+    "SparkSQL is particularly well-suited for temporal analysis on the taxi dataset because time-based aggregations naturally take the form of relational queries. These operations involve multiple levels of aggregation, conditional filtering, and cross-period comparisons (e.g. January 2015 vs January 2016) that would require deeply chained .groupBy(), .agg(), and .join() calls in the DataFrame API. In SQL, the same logic is expressed declaratively and remains readable at a glance. SparkSQL also integrates seamlessly with Spark's Catalyst optimizer, meaning there is no performance trade-off."
    ]
   },
   {
@@ -1848,12 +1735,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"6\">\n",
-    "\n",
-    "# **6. Initial Preprocessing - Yellow Taxis Dataset**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "# 5. Initial Preprocessing- Yellow Taxis Dataset\n"
    ]
   },
   {
@@ -1984,24 +1866,14 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7\">\n",
-    "\n",
-    "# **7. EDA - PaySim Dataset**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "# 6. EDA - PaySim Dataset"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.1\">\n",
-    "\n",
-    "## **7.1 Dataset Preview**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "## 6.1. Dataset Preview"
    ]
   },
   {
@@ -2218,14 +2090,8 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.2\">\n",
-    "\n",
-    "## **7.2 Class Imbalance**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n",
-    "\n",
-    "Using the Spark DataFrame API, we first inspect the distribution of transaction types.\n"
+    "## 6.2 Class Imbalance\n",
+    "Using the Spark DataFrame API, we first inspect the distribution of transaction types."
    ]
   },
   {
@@ -2268,12 +2134,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.3\">\n",
-    "\n",
-    "## **7.3 Data Quality Analysis**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "## 6.3. Data Quality Analysis"
    ]
   },
   {
@@ -2290,12 +2151,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.3.1\">\n",
-    "\n",
-    "### **7.3.1 Unique values**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "### 6.3.1. Unique values"
    ]
   },
   {
@@ -2398,12 +2254,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.3.2\">\n",
-    "\n",
-    "### **7.3.2 Account Validity**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "### 6.3.2. Account Validity"
    ]
   },
   {
@@ -2603,12 +2454,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.3.3\">\n",
-    "\n",
-    "### **7.3.3 Null values**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "### 6.3.3. Null values"
    ]
   },
   {
@@ -2661,12 +2507,9 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.3.4\">\n",
+    "### 6.3.4. Transactions between the Same Account\n",
     "\n",
-    "### **7.3.4 Transactions between the Same Account**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "These type of transactions are not feasable, so we will check if they exist in our dataset."
    ]
   },
   {
@@ -2707,12 +2550,9 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.3.5\">\n",
+    "### 6.3.5. Zero-Amount Transactions\n",
     "\n",
-    "### **7.3.5 Zero-Amount Transactions**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "Here we identify transactions with amount = 0. These could potentially represent errors in the data or fraudulent transactions."
    ]
   },
   {
@@ -2788,14 +2628,8 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.3.6\">\n",
-    "\n",
-    "### **7.3.6 Balance Consistency Analysis**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n",
-    "\n",
-    "A common indicator of fraud is a discrepancy between the transaction amount and the account's balance change. We implement a validation logic to flag transactions where the balance was not updated correctly.\n"
+    "### 6.3.6. Balance Consistency Analysis\n",
+    "A common indicator of fraud is a discrepancy between the transaction amount and the account's balance change. We implement a validation logic to flag transactions where the balance was not updated correctly."
    ]
   },
   {
@@ -3052,14 +2886,9 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.3.7\">\n",
+    "### 6.3.7. Transaction Amount Consistency Analysis\n",
     "\n",
-    "### **7.3.7 Transaction Amount Consistency Analysis**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n",
-    "\n",
-    "Following the previous analysis, we will go further into transaction amount consistency with the origin account balance. For all transactions except for `CASH_IN` transactions, we will check for transactions where the `amount` is bigger than the `oldbalanceOrg`, which should not be possible. For the `CASH_IN` transactions, the same will be done, but for `newbalanceOrg`.\n"
+    "Following the previous analysis, we will go further into transaction amount consistency with the origin account balance. For all transactions except for `CASH_IN` transactions, we will check for transactions where the `amount` is bigger than the `oldbalanceOrg`, which should not be possible. For the `CASH_IN` transactions, the same will be done, but for `newbalanceOrg`."
    ]
   },
   {
@@ -3136,30 +2965,19 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.4\">\n",
-    "\n",
-    "## **7.4 Statistical Analysis of Target Variable**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "## 6.4 Statistical Analysis of Target Variable"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.4.1\">\n",
-    "\n",
-    "### **7.4.1 Fraud Ratios - SparkSQL**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n",
-    "\n",
+    "### 6.4.1. Fraud Ratios - SparkSQL\n",
     "Analysing the percentage of transactions that:\n",
     "\n",
     "- Were flagged and actually were fraud\n",
     "- Were not flagged but were fraud\n",
-    "- Were fraud and were flagged\n"
+    "- Were fraud and were flagged"
    ]
   },
   {
@@ -3216,14 +3034,8 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.4.2\">\n",
-    "\n",
-    "### **7.4.2 Total Fraudulent Amount per Type**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n",
-    "\n",
-    "RDD-based Aggregation: We aim to calculate the total monetary volume of fraud for each transaction type to determine where the highest financial risk lies.\n"
+    "### 6.4.2 Total Fraudulent Amount per Type\n",
+    "RDD-based Aggregation: We aim to calculate the total monetary volume of fraud for each transaction type to determine where the highest financial risk lies."
    ]
   },
   {
@@ -3277,12 +3089,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.4.3\">\n",
-    "\n",
-    "### **7.4.3 Fraud Rate per Type**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "### 6.4.3. Fraud Rate per Type"
    ]
   },
   {
@@ -3347,14 +3154,8 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.4.4\">\n",
-    "\n",
-    "### **7.4.4 Identification of Potential \"Money Mule\" Accounts**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n",
-    "\n",
-    "To further investigate the fraud network, we performed a grouping analysis on the destination accounts (`nameDest`). Unlike victim accounts, which are usually targeted once, destination accounts that appear multiple times in fraudulent transactions are highly likely to be controlled by the fraudulent agents.\n"
+    "### 6.4.4. Identification of Potential \"Money Mule\" Accounts\n",
+    "To further investigate the fraud network, we performed a grouping analysis on the destination accounts (`nameDest`). Unlike victim accounts, which are usually targeted once, destination accounts that appear multiple times in fraudulent transactions are highly likely to be controlled by the fraudulent agents."
    ]
   },
   {
@@ -3456,16 +3257,10 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"7.4.5\">\n",
-    "\n",
-    "### **7.4.5 Cumulative Fraudulent Amount per Account**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n",
-    "\n",
+    "### 6.4.5. Cumulative Fraudulent Amount per Account\n",
     "It is often the case in real life fraud scenarios that the same bank account suffers multiple times over time. It is a common tactic for scammers to drain the same account progressively once they notice the scheme works.\n",
     "\n",
-    "Using Spark Window Functions, we will track the cumulative amount moved by each account over time (steps) to verify if this behaviour is present in our dataset.\n"
+    "Using Spark Window Functions, we will track the cumulative amount moved by each account over time (steps) to verify if this behaviour is present in our dataset."
    ]
   },
   {
@@ -3635,12 +3430,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"8\">\n",
-    "\n",
-    "# **8. Initial Preprocessing - PaySim Dataset**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "# 7. Initial Preprocessing - PaySim Dataset"
    ]
   },
   {
@@ -3673,12 +3463,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<a class=\"anchor\" id=\"9\">\n",
-    "\n",
-    "# **9. Save Preprocessed Datasets**\n",
-    "\n",
-    "[Back to TOP](#TOP)\n",
-    "</a>\n"
+    "# Save Preprocessed Datasets"
    ]
   },
   {
