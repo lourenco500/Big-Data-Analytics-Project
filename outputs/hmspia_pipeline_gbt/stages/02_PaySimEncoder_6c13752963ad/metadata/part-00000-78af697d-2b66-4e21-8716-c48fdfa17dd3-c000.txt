@@ -1,0 +1,1 @@
+{"class":"transformers.PaySimEncoder.PaySimEncoder","timestamp":1779637511691,"sparkVersion":"4.1.1","uid":"PaySimEncoder_6c13752963ad","paramMap":{},"defaultParamMap":{"bool_cols":["isFlaggedFraud"]}}
