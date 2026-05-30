@@ -3,55 +3,45 @@ import random
 import time
 from datetime import datetime
 
+import pandas as pd
 from kafka import KafkaProducer
-
-from market_data import SYMBOLS, fetch_trade, fetch_news
-
 
 producer = KafkaProducer(
     bootstrap_servers=["localhost:8098"],
     value_serializer=lambda m: json.dumps(m).encode("utf-8"),
 )
 
-
 TRIPS_POLL_SECONDS = 5
-TRIPS_PER_CYCLE   = 50          # random subset of SYMBOLS each cycle
-NEWS_EVERY_N_CYCLES = 12         # once a minute
-NEWS_PER_CYCLE      = 20         # random subset on each news cycle
+TRIPS_PER_CYCLE = 50
 
+# Load the cleaned taxi parquet once
+df = pd.read_parquet("data/clean/taxi_clean.parquet")
+df["tpep_pickup_datetime"]  = df["tpep_pickup_datetime"].astype(str)
+df["tpep_dropoff_datetime"] = df["tpep_dropoff_datetime"].astype(str)
 
-def safe(symbol, fetcher, *args):
-    """Run `fetcher(symbol, *args)`, log and swallow per-symbol errors."""
-    try:
-        return fetcher(symbol, *args)
-    except Exception as exc:
-        print(f"[{datetime.now()}] {symbol} {fetcher.__name__} failed: {exc}")
-        return None
+# Extract only the relevant columns and convert to list of dicts for sampling
+RECORDS = df[[
+    "tpep_pickup_datetime", "tpep_dropoff_datetime",
+    "PULocationID", "DOLocationID", "passenger_count",
+    "trip_distance", "fare_amount", "tip_amount",
+    "total_amount", "payment_type",
+]].to_dict(orient="records")
 
-
-def sample(symbols, k):
-    """Random sample of up to k symbols (clamped to len(symbols))."""
-    return random.sample(symbols, k=min(k, len(symbols)))
+# For simplicity, we sample from the full dataset each cycle
+def sample_trips(k):
+    return random.sample(RECORDS, k=min(k, len(RECORDS)))
 
 
 if __name__ == "__main__":
-    cycle = 0
     while True:
-        for symbol in sample(SYMBOLS, TRIPS_PER_CYCLE):
-            trade = safe(symbol, fetch_trade)
-            if trade:
-                print(f"trip  @ {datetime.now()} | {trade}")
-                producer.send("trips", trade)
+        for trip in sample_trips(TRIPS_PER_CYCLE):
+            # Each cycle re-emits every current trip with a fresh observation timestamp - the join sees them as new events
+            print(f"trip  @ {datetime.now()} | {trip}")
+            producer.send("trips", trip)
 
-        if cycle % NEWS_EVERY_N_CYCLES == 0:
-            for symbol in sample(SYMBOLS, NEWS_PER_CYCLE):
-                # Each cycle re-emits every current RSS item with a fresh
-                # observation timestamp - the join sees them as new events.
-                items = safe(symbol, fetch_news) or []
-                for item in items:
-                    print(f"news  @ {datetime.now()} | {symbol}: {item['headline'][:80]}")
-                    producer.send("news", item)
+            # Also publish to long_trips if distance > 10 miles
+            if trip["trip_distance"] > 10:
+                producer.send("long_trips", trip)
 
         producer.flush()
-        cycle += 1
         time.sleep(TRIPS_POLL_SECONDS)
