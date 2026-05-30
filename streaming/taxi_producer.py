@@ -14,18 +14,23 @@ producer = KafkaProducer(
 TRIPS_POLL_SECONDS = 5
 TRIPS_PER_CYCLE = 50
 
-# Load the cleaned taxi parquet once
-df = pd.read_parquet("data/clean/taxi_clean.parquet")
-df["tpep_pickup_datetime"]  = df["tpep_pickup_datetime"].astype(str)
-df["tpep_dropoff_datetime"] = df["tpep_dropoff_datetime"].astype(str)
+import pandas as pd
 
-# Extract only the relevant columns and convert to list of dicts for sampling
-RECORDS = df[[
+COLS = [
     "tpep_pickup_datetime", "tpep_dropoff_datetime",
     "PULocationID", "DOLocationID", "passenger_count",
     "trip_distance", "fare_amount", "tip_amount",
     "total_amount", "payment_type",
-]].to_dict(orient="records")
+]
+
+df = pd.read_parquet("data/clean/taxi_clean.parquet", columns=COLS)
+
+# Only keep a manageable sample to avoid OOM
+df = df.sample(n=50_000, random_state=42).reset_index(drop=True)
+df["tpep_pickup_datetime"]  = df["tpep_pickup_datetime"].astype(str)
+df["tpep_dropoff_datetime"] = df["tpep_dropoff_datetime"].astype(str)
+
+RECORDS = df.to_dict(orient="records")
 
 # For simplicity, we sample from the full dataset each cycle
 def sample_trips(k):
