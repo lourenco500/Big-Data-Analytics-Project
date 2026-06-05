@@ -20,11 +20,11 @@ This project demonstrates the use of **PySpark** for large-scale data processing
 
 ## Datasets
 
-| Dataset | Description | Used in |
-|---|---|---|
-| **NYC Yellow Taxi** | 12M+ trip records across Jan 2015 and Jan–Mar 2016. Includes fare, distance, pickup/dropoff zones, and rate codes. | Notebooks 1, 5 |
-| **PaySim** | Synthetic financial transaction dataset simulating 30 days of mobile money activity. Severe class imbalance — fraud < 0.2% of transactions. | Notebooks 1, 2, 4 |
-| **Fashion MNIST** | 70,000 grayscale images (28×28) of clothing items across 10 categories. | Notebook 3 |
+| Dataset | Description | Used in | Source |
+|---|---|---|---|
+| **NYC Yellow Taxi** | 12M+ trip records across Jan 2015 and Jan–Mar 2016. Includes fare, distance, pickup/dropoff zones, and rate codes. | Notebooks 1, 5 | [TLC Trip Record Data](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) |
+| **PaySim** | Synthetic financial transaction dataset simulating 30 days of mobile money activity. Severe class imbalance — fraud < 0.2% of transactions. | Notebooks 1, 2, 4 | [Kaggle — Financial Fraud Detection](https://www.kaggle.com/datasets/sriharshaeedala/financial-fraud-detection-dataset) |
+| **Fashion MNIST** | 70,000 grayscale images (28×28) of clothing items across 10 categories. | Notebook 3 | [Kaggle — Fashion MNIST](https://www.kaggle.com/datasets/zalando-research/fashionmnist) |
 
 ---
 
